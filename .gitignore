@@ -1,0 +1,9 @@
+.rvmrc
+.DS_Store
+*.rbc
+*~
+*.gem
+.bundle
+.rspec
+Gemfile.lock
+bin/
