@@ -5,6 +5,11 @@ require_relative "verifier"
 module TBK
   class Api
 
+    # api = TBK::Api.new
+    # req = api.client.build_request(:init_transaction, message: api.init_data(1,2,3))
+    # api.sign_xml req
+    # Transbank api docs: http://www.transbankdevelopers.cl/?m=api
+
     def initialize
       @wsdl_path = config.wsdl_transaction_url
       @commerce_code = config.commerce_code
@@ -23,14 +28,14 @@ module TBK
       TBK::Config.config
     end
 
-    def init_data(amount, buyOrder, sessionId)
+    def init_data(amount, buyOrder, sessionId, returnURL, finalURL)
       {
         "wsInitTransactionInput" => {
           "wSTransactionType" => "TR_NORMAL_WS",
           "buyOrder" => buyOrder,
           "sessionId" => sessionId,
-          "returnURL" => "http://localhost:3000/tbk-normal-controller.rb?action=result",
-          "finalURL" => "http://localhost:3000/tbk-normal-controller.rb?action=end",
+          "returnURL" => returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result",
+          "finalURL" => finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end",
           "transactionDetails" => {
             "amount" => amount,
             "commerceCode" => @commerce_code,
@@ -40,9 +45,9 @@ module TBK
       }
     end
 
-    def init_transaction(amount, buyOrder, sessionId)
+    def init_transaction(amount, buyOrder, sessionId, returnURL = '', finalURL = '')
 
-      initInput = init_data(amount, buyOrder, sessionId)
+      initInput = init_data(amount, buyOrder, sessionId, returnURL, finalURL)
 
       req = @client.build_request(:init_transaction, message: initInput)
       document = sign_xml(req)
@@ -75,7 +80,8 @@ module TBK
 
       response_array ={
         "token" => token.to_s,
-        "url" => url.to_s
+        "url" => url.to_s,
+        "init_url" => url.to_s + "?token_ws=" + token.to_s
       }
 
       return response_array
@@ -96,7 +102,7 @@ module TBK
       signer.sign!(:issuer_serial => true)
       signed_xml = signer.to_xml
       document = Nokogiri::XML(signed_xml)
-      x509data = documentAck.at_xpath("//*[local-name()='X509Data']")
+      x509data = document.at_xpath("//*[local-name()='X509Data']")
       new_data = x509data.clone()
       new_data.set_attribute("xmlns:ds", "http://www.w3.org/2000/09/xmldsig#")
       n = Nokogiri::XML::Node.new('wsse:SecurityTokenReference', document)
