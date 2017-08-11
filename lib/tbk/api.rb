@@ -70,12 +70,17 @@ module TBK
         "tokenInput" => token
       }
       response = make_request(:get_transaction_result, message_data)
-      response_document = Nokogiri::HTML(response.to_s)
+      document = Nokogiri::HTML(response.to_s)
+      return document
+      return {
+        "paymenttypecode" => get_xml_value("paymenttypecode", document),
+        "vci" => get_xml_value("vci", document),
+      }
     end
 
-    def get_xml_value key, response
-      response_document = Nokogiri::HTML(response.to_s)
-      response_document.xpath("//" + key).each do |v|
+    def get_xml_value key, document
+      parsed_xml = Nokogiri::HTML(document.to_s)
+      parsed_xml.xpath("//" + key).each do |v|
         return v.text
       end
     end
@@ -83,12 +88,12 @@ module TBK
     def init_transaction(amount, buyOrder, sessionId)
 
       message_data = init_data(amount, buyOrder, sessionId)
-      response = make_request(:init_transaction, message_data)
+      document = make_request(:init_transaction, message_data)
 
-      token = get_xml_value("token", response)
-      url = get_xml_value("url", response)
+      token = get_xml_value("token", document)
+      url = get_xml_value("url", document)
 
-      is_a_valid_cert?(response)
+      is_a_valid_cert?(document)
 
       response_array ={
         "token" => token.to_s,
@@ -123,9 +128,9 @@ module TBK
       return document
     end
 
-    def is_a_valid_cert? response
+    def is_a_valid_cert? document
       tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
-      if !Verifier.verify(response, tbk_cert)
+      if !Verifier.verify(document, tbk_cert)
         puts "El Certificado es Invalido."
         return true
       else
