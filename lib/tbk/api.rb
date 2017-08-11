@@ -69,24 +69,15 @@ module TBK
       message_data = {
         "tokenInput" => token
       }
-      response = make_request(:get_transaction_result, message_data)
-      document = Nokogiri::HTML(response.to_s)
+      document = make_request(:get_transaction_result, message_data)
+      payment_data = {}
+      params = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
+        "responsecode", "sessionid", "transactiondate"]
+      params.each do |param|
+        payment_data.merge!({param.to_s => get_xml_value(param.to_s, document)})
+      end
       #return document
-      return {
-        "paymenttypecode" => get_xml_value("paymenttypecode", document),
-        "vci" => get_xml_value("vci", document),
-        "signaturevalue" => get_xml_value("signaturevalue", document),
-        "keyinfo" => get_xml_value("keyinfo", document),
-        "securitytokenreference" => get_xml_value("securitytokenreference", document),
-        "buyorder" => get_xml_value("buyorder", document),
-        "carddetail" => get_xml_value("carddetail", document),
-        "cardnumber" => get_xml_value("cardnumber", document),
-        "amount" => get_xml_value("amount", document),
-        "authorizationcode" => get_xml_value("authorizationcode", document),
-        "responsecode" => get_xml_value("responsecode", document),
-        "sessionid" => get_xml_value("sessionid", document),
-        "transactiondate" => get_xml_value("transactiondate", document)
-      }
+      return payment_data
     end
 
     def get_xml_value key, document

@@ -12,7 +12,6 @@ module TBK
       if !check_signature(document, signed_info_node, cert)
         return false
       end
-
       true
     end
 
@@ -20,12 +19,10 @@ module TBK
 
     def self.check_digest(doc, signed_info_node)
       signed_info_node.xpath("//ds:Reference", ds: 'http://www.w3.org/2000/09/xmldsig#').each do |node|
-
         if !process_ref_node(doc, node)
           return false
         end
         true
-
       end
     end
 
