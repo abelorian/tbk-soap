@@ -2,9 +2,9 @@ module TBK
   class Document
 
     def initialize
-      @public_cert = OpenSSL::X509::Certificate.new(open config.cert_path)
-      @private_key = OpenSSL::PKey::RSA.new(open config.key_path)
-      @webpay_cert = OpenSSL::X509::Certificate.new(open config.server_cert_path)
+      @public_cert = TBK::Config.config.public_cert
+      @private_key = TBK::Config.config.private_key
+      @webpay_cert = TBK::Config.config.webpay_cert
     end
 
     def sign_xml (input_xml)
@@ -32,8 +32,15 @@ module TBK
       return document
     end
 
-    def config
-      TBK::Config.config
+    def self.get_xml_values keys, document
+      data = {}
+      parsed_xml = Nokogiri::HTML(document.to_s)
+      keys.each do |key|
+        parsed_xml.xpath("//" + key).each do |v|
+          data.merge!({key.to_s => v.text})
+        end        
+      end
+      return data
     end
 
     def is_a_valid_document? document

@@ -34,5 +34,17 @@ module TBK
       @config ||= Config.new
     end
 
+    def public_cert
+      OpenSSL::X509::Certificate.new(open @cert_path)
+    end
+
+    def private_key
+      OpenSSL::PKey::RSA.new(open @key_path)
+    end
+
+    def webpay_cert
+      OpenSSL::X509::Certificate.new(open @server_cert_path)
+    end
+
   end
 end

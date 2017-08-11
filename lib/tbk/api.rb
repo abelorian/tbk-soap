@@ -15,6 +15,7 @@ module TBK
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
 
+      commerce_code = TBK::Config.config.commerce_code
       returnURL = returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result"
       finalURL = finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end"
 
@@ -27,52 +28,27 @@ module TBK
           "finalURL" => finalURL,
           "transactionDetails" => {
             "amount" => amount,
-            "commerceCode" => config.commerce_code,
+            "commerceCode" => commerce_code,
             "buyOrder" => buyOrder
           }
         }
       }
     end
 
+    def init_transaction amount, buyOrder, sessionId
+      input = init_data(amount, buyOrder, sessionId)
+      document = @client.make_request(:init_transaction, input)
+      return TBK::Document.get_xml_values ['url', 'token'], document
+    end
+
     def get_transaction_result token
-      message_data = {
-        "tokenInput" => token
-      }
-      document = @client.make_request(:get_transaction_result, message_data)
-      payment_data = {}
-      params = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
+      input = {"tokenInput" => token}
+      document = @client.make_request(:get_transaction_result, input)
+      keys = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
         "responsecode", "sessionid", "transactiondate"]
-      params.each do |param|
-        payment_data.merge!({param.to_s => get_xml_value(param.to_s, document)})
-      end
+      return TBK::Document.get_xml_values keys, document
       #return document
-      return payment_data
     end
-
-    def get_xml_value key, document
-      parsed_xml = Nokogiri::HTML(document.to_s)
-      parsed_xml.xpath("//" + key).each do |v|
-        return v.text
-      end
-    end
-
-    def init_transaction(amount, buyOrder, sessionId)
-
-      message_data = init_data(amount, buyOrder, sessionId)
-      document = @client.make_request(:init_transaction, message_data)
-
-      token = get_xml_value("token", document)
-      url = get_xml_value("url", document)
-
-      response_array ={
-        "token" => token.to_s,
-        "url" => url.to_s,
-        "init_url" => url.to_s + "?token_ws=" + token.to_s
-      }
-
-      return response_array
-    end
-
 
   end
 
