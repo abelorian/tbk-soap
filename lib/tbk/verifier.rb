@@ -6,10 +6,12 @@ module TBK
       signed_info_node = document.at_xpath("/soap:Envelope/soap:Header/wsse:Security/ds:Signature/ds:SignedInfo",  {ds: 'http://www.w3.org/2000/09/xmldsig#', wsse: "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", soap:"http://schemas.xmlsoap.org/soap/envelope/"})
 
       if !check_digest(document, signed_info_node)
+        p "check_digest :("
         return false
       end
 
       if !check_signature(document, signed_info_node, cert)
+        p "check_signature :("
         return false
       end
       true
