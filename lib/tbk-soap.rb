@@ -10,7 +10,7 @@ require "tbk/api"
 require "tbk/client"
 
 class TbkSoap
-  def self.hi
-    puts "Hello world!"
+  def api
+    @api ||= TBK::Api.new
   end
 end

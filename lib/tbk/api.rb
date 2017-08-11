@@ -29,7 +29,7 @@ module TBK
       TBK::Config.config
     end
 
-    def init_data(amount, buyOrder, sessionId, returnURL, finalURL)
+    def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
 
       returnURL = returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result"
       finalURL = finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end"
@@ -51,10 +51,10 @@ module TBK
     end
 
     def make_request action, message_data
-      req = @client.build_request(:init_transaction, message: message_data)
+      req = @client.build_request(action.to_sym, message: message_data)
       document = sign_xml(req)
       begin
-        response = @client.call(:init_transaction) do
+        response = @client.call(action.to_sym) do
           xml document.to_xml(:save_with => 0)
         end
 
@@ -69,24 +69,24 @@ module TBK
       message_data = {
         "tokenInput" => token
       }
-      response = make_request(:get_transaction_result, message_data)   
+      response = make_request(:get_transaction_result, message_data)
+      response_document = Nokogiri::HTML(response.to_s)
     end
 
-    def init_transaction(amount, buyOrder, sessionId, returnURL = '', finalURL = '')
-
-      message_data = init_data(amount, buyOrder, sessionId, returnURL, finalURL)
-      response = make_request(:init_transaction, message_data)      
-
-      token=''
+    def get_xml_value key, response
       response_document = Nokogiri::HTML(response.to_s)
-      response_document.xpath("//token").each do |token_value|
-        token = token_value.text
+      response_document.xpath("//" + key).each do |v|
+        return v.text
       end
+    end
 
-      url=''
-      response_document.xpath("//url").each do |url_value|
-        url = url_value.text
-      end
+    def init_transaction(amount, buyOrder, sessionId)
+
+      message_data = init_data(amount, buyOrder, sessionId)
+      response = make_request(:init_transaction, message_data)
+
+      token = get_xml_value("token", response)
+      url = get_xml_value("url", response)
 
       is_a_valid_cert?(response)
 
@@ -127,7 +127,9 @@ module TBK
       tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
       if !Verifier.verify(response, tbk_cert)
         puts "El Certificado es Invalido."
+        return true
       else
+        return false
         puts "El Certificado es Valido."
       end
     end
