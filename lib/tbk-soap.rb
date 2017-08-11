@@ -8,6 +8,7 @@ require "tbk/config"
 require "tbk/verifier"
 require "tbk/api"
 require "tbk/client"
+require "tbk/document"
 
 class TbkSoap
   def api
