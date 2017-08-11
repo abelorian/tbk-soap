@@ -5,6 +5,7 @@ require_relative "verifier"
 module TBK
   class Api
 
+    # require 'tbk-soap'
     # api = TBK::Api.new
     # req = api.client.build_request(:init_transaction, message: api.init_data(1,2,3))
     # api.sign_xml req
@@ -29,13 +30,17 @@ module TBK
     end
 
     def init_data(amount, buyOrder, sessionId, returnURL, finalURL)
-      {
+
+      returnURL = returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result"
+      finalURL = finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end"
+
+      return {
         "wsInitTransactionInput" => {
           "wSTransactionType" => "TR_NORMAL_WS",
           "buyOrder" => buyOrder,
           "sessionId" => sessionId,
-          "returnURL" => returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result",
-          "finalURL" => finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end",
+          "returnURL" => returnURL,
+          "finalURL" => finalURL,
           "transactionDetails" => {
             "amount" => amount,
             "commerceCode" => @commerce_code,
@@ -45,11 +50,8 @@ module TBK
       }
     end
 
-    def init_transaction(amount, buyOrder, sessionId, returnURL = '', finalURL = '')
-
-      initInput = init_data(amount, buyOrder, sessionId, returnURL, finalURL)
-
-      req = @client.build_request(:init_transaction, message: initInput)
+    def make_request action, message_data
+      req = @client.build_request(:init_transaction, message: message_data)
       document = sign_xml(req)
       begin
         response = @client.call(:init_transaction) do
@@ -57,8 +59,23 @@ module TBK
         end
 
       rescue Exception, RuntimeError
+        p "---------------- error"
         raise
       end
+      response
+    end
+
+    def get_transaction_result token
+      message_data = {
+        "tokenInput" => token
+      }
+      response = make_request(:get_transaction_result, message_data)   
+    end
+
+    def init_transaction(amount, buyOrder, sessionId, returnURL = '', finalURL = '')
+
+      message_data = init_data(amount, buyOrder, sessionId, returnURL, finalURL)
+      response = make_request(:init_transaction, message_data)      
 
       token=''
       response_document = Nokogiri::HTML(response.to_s)
@@ -71,12 +88,7 @@ module TBK
         url = url_value.text
       end
 
-      tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
-      if !Verifier.verify(response, tbk_cert)
-        puts "El Certificado es Invalido."
-      else
-        puts "El Certificado es Valido."
-      end
+      is_a_valid_cert?(response)
 
       response_array ={
         "token" => token.to_s,
@@ -109,6 +121,15 @@ module TBK
       n.add_child(new_data)
       x509data.add_next_sibling(n)
       return document
+    end
+
+    def is_a_valid_cert? response
+      tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
+      if !Verifier.verify(response, tbk_cert)
+        puts "El Certificado es Invalido."
+      else
+        puts "El Certificado es Valido."
+      end
     end
 
 
