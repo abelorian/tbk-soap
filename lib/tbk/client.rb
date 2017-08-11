@@ -4,6 +4,7 @@ module TBK
 
     def initialize
       @client = client
+      @document = TBK::Document.new
     end
 
     def client
@@ -12,16 +13,17 @@ module TBK
 
     def make_request action, message_data
       req = @client.build_request(action.to_sym, message: message_data)
-      document = TBK::Document.new.sign_xml(req)
+      signed_document = @document.sign_xml(req)
       begin
         response = @client.call(action.to_sym) do
-          xml document.to_xml(:save_with => 0)
+          xml signed_document.to_xml(:save_with => 0)
         end
 
       rescue Exception, RuntimeError
         p "---------------- error"
         raise
       end
+      @document.is_a_valid_document? response
       response
     end
 

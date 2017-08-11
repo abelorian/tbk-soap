@@ -28,7 +28,6 @@ module TBK
       n = Nokogiri::XML::Node.new('wsse:SecurityTokenReference', document)
       n.add_child(new_data)
       x509data.add_next_sibling(n)
-      is_a_valid_document? document
       return document
     end
 
@@ -44,13 +43,13 @@ module TBK
     end
 
     def is_a_valid_document? document
-      tbk_cert = OpenSSL::X509::Certificate.new(@webpay_cert)
+      tbk_cert = @webpay_cert
       if !Verifier.verify(document, tbk_cert)
         puts "El Certificado es Invalido."
         return true
       else
-        return false
         puts "El Certificado es Valido."
+        return false
       end
     end
 
