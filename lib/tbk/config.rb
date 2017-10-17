@@ -21,13 +21,6 @@ module TBK
       ]
 
       @http_options = {}
-
-      @wsdl_transaction_url = "https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSWebpayService?wsdl"
-      @wsdl_nullify_url     = "https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCommerceIntegrationService?wsdl"
-      @commerce_code        = "597020000541"
-      @cert_path            = 'lib/tbk/keys/597020000541.crt'
-      @key_path             = 'lib/tbk/keys/597020000541.key'
-      @server_cert_path     = 'lib/tbk/keys/tbk.pem'
     end
 
     def self.config
