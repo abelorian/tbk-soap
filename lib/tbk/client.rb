@@ -13,10 +13,10 @@ module TBK
 
     def make_request action, message_data
       req = @client.build_request(action.to_sym, message: message_data)
-      signed_document = @document.sign_xml(req)
+      signed_xml = @document.sign_xml(req)
       begin
         response = @client.call(action.to_sym) do
-          xml signed_document.to_xml(:save_with => 0)
+          xml signed_xml.to_xml(:save_with => 0)
         end
 
       rescue Exception, RuntimeError
