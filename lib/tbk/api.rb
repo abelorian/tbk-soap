@@ -8,13 +8,12 @@ module Tbk
     # api = TBK::Api.new
     # Transbank api docs: http://www.transbankdevelopers.cl/?m=api
 
-    def initialize
-      @client = Tbk::Client.new
-      # @ambient = configuration.get(ambient)
+    def client
+      @client ||= Tbk::Client.new
     end
 
     def config
-      Tbk::Webpay.config
+      Tbk::Webpay.configuration
     end
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
@@ -41,13 +40,13 @@ module Tbk
 
     def init_transaction amount, buyOrder, sessionId
       input = init_data(amount, buyOrder, sessionId)
-      document = @client.make_request(:init_transaction, input)
+      document = client.make_request(:init_transaction, input)
       return Tbk::Document.get_xml_values ['url', 'token'], document
     end
 
     def get_transaction_result token
       input = {"tokenInput" => token}
-      document = @client.make_request(:get_transaction_result, input)
+      document = client.make_request(:get_transaction_result, input)
       keys = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
         "responsecode", "sessionid", "transactiondate"]
       return Tbk::Document.get_xml_values keys, document

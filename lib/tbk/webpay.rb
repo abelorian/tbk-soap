@@ -18,9 +18,16 @@ module Tbk
 
     attr_reader :configuration
 
+    # Delegate api
+    Api.instance_methods.each { |m| define_method(m) { |*args| api.send(m, *args) } }
+
     def configure
       @configuration ||= Config.new
       yield(@configuration)
+    end
+
+    def api
+      @api ||= Api.new
     end
 
   end
