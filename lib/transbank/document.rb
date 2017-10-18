@@ -1,10 +1,10 @@
-module Tbk
+module Transbank
   class Document
 
     def initialize
-      @public_cert = OpenSSL::X509::Certificate.new(open Tbk::Webpay.configuration.cert_path)
-      @private_key = OpenSSL::PKey::RSA.new(open Tbk::Webpay.configuration.key_path)
-      @webpay_cert = OpenSSL::X509::Certificate.new(open Tbk::Webpay.configuration.server_cert_path)
+      @public_cert = OpenSSL::X509::Certificate.new(open Transbank::Webpay.configuration.cert_path)
+      @private_key = OpenSSL::PKey::RSA.new(open Transbank::Webpay.configuration.key_path)
+      @webpay_cert = OpenSSL::X509::Certificate.new(open Transbank::Webpay.configuration.server_cert_path)
     end
 
     def sign_xml (input_xml)

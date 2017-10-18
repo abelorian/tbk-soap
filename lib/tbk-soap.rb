@@ -1,3 +1,3 @@
-require 'tbk/webpay'
+require 'transbank/webpay'
 
 p "load tbk-soap"

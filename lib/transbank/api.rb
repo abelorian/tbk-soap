@@ -1,7 +1,7 @@
 require 'signer'
 require 'savon'
 
-module Tbk
+module Transbank
   class Api
 
     # require 'tbk-soap'
@@ -9,11 +9,11 @@ module Tbk
     # Transbank api docs: http://www.transbankdevelopers.cl/?m=api
 
     def client
-      @client ||= Tbk::Client.new
+      @client ||= Transbank::Client.new
     end
 
     def config
-      Tbk::Webpay.configuration
+      Transbank::Webpay.configuration
     end
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
@@ -41,7 +41,7 @@ module Tbk
     def init_transaction amount, buyOrder, sessionId
       input = init_data(amount, buyOrder, sessionId)
       document = client.make_request(:init_transaction, input)
-      return Tbk::Document.get_xml_values ['url', 'token'], document
+      return Transbank::Document.get_xml_values ['url', 'token'], document
     end
 
     def get_transaction_result token
@@ -49,7 +49,7 @@ module Tbk
       document = client.make_request(:get_transaction_result, input)
       keys = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
         "responsecode", "sessionid", "transactiondate"]
-      return Tbk::Document.get_xml_values keys, document
+      return Transbank::Document.get_xml_values keys, document
       #return document
     end
 

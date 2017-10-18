@@ -1,4 +1,4 @@
-module Tbk
+module Tbk2
   class Verifier
 
     def self.verify(document, cert)  

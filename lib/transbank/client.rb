@@ -1,14 +1,13 @@
-module Tbk
-
+module Transbank
   class Client
 
     def initialize
       @client = client
-      @document = Tbk::Document.new
+      @document = Transbank::Document.new
     end
 
     def client
-      @client ||= Savon.client(wsdl: Tbk::Webpay.configuration.wsdl_transaction_url)
+      @client ||= Savon.client(wsdl: Transbank::Webpay.configuration.wsdl_transaction_url)
     end
 
     def make_request action, message_data
@@ -28,5 +27,4 @@ module Tbk
     end
 
   end
-
 end

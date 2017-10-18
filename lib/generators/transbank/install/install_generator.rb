@@ -4,7 +4,7 @@ module TbkWs
       source_root File.expand_path('../templates', __FILE__)
 
       def generate_config_file
-        copy_file 'tbk_ws_config.rb', 'config/initializers/tbk_ws_config.rb'
+        copy_file 'transbank_config.rb', 'config/initializers/transbank_config.rb'
       end
     end
   end
