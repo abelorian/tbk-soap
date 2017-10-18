@@ -15,6 +15,7 @@ module TBK
 
     def self.config
       @config ||= Config.new
+      yield(@configuration)
     end
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
