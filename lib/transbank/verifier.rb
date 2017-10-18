@@ -1,4 +1,4 @@
-module Tbk2
+module Transbank
   class Verifier
 
     def self.verify(document, cert)  
