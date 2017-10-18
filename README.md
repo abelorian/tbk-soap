@@ -7,6 +7,26 @@ This is a pure ruby implementation of Transbank's SOAP service.
 
 This library is not developed, supported nor endorsed in any way by Transbank S.A.
 
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'tbk-soap'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install tbk-soap
+
+Run the generator:
+
+    $ rails generate tbk_ws:install
+
 ### Usage
 
 Add this line to your application's Gemfile:
