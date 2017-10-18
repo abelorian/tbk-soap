@@ -18,7 +18,7 @@ module Tbk
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
 
-      commerce_code = Tbk::Config.config.commerce_code
+      commerce_code = config.commerce_code
       returnURL = returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result"
       finalURL = finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end"
 

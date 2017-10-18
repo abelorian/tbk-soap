@@ -12,22 +12,24 @@ require "tbk/document"
 
 
 module Tbk
-  class Webpay
+  module Webpay
+    class << self
 
-    p "class"
+      p "class"
 
-    attr_reader :configuration
+      attr_reader :configuration
 
-    # Delegate api
-    Api.instance_methods.each { |m| define_method(m) { |*args| api.send(m, *args) } }
+      Api.instance_methods.each { |m| define_method(m) { |*args| api.send(m, *args) } }
 
-    def configure
-      @configuration ||= Config.new
-      yield(@configuration)
-    end
+      def configure
+        @configuration ||= Config.new
+        yield(@configuration)
+      end
 
-    def api
-      @api ||= Api.new
+      def api
+        @api ||= Api.new
+      end
+
     end
 
   end
