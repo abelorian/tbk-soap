@@ -14,7 +14,7 @@ module TBK
     end
 
     def self.config
-      @config ||= Config.new
+      @configuration ||= Config.new
       yield(@configuration)
     end
 
