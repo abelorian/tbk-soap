@@ -10,13 +10,18 @@ require "tbk/api"
 require "tbk/client"
 require "tbk/document"
 
-class << self
 
-  attr_reader :config
+module Tbk
+  class Webpay
 
-  def self.configure
-    @config ||= Config.new
-    yield(@config)
+    p "class"
+
+    attr_reader :configuration
+
+    def configure
+      @configuration ||= Config.new
+      yield(@configuration)
+    end
+
   end
-
 end

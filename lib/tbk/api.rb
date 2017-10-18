@@ -1,7 +1,7 @@
 require 'signer'
 require 'savon'
 
-module TBK
+module Tbk
   class Api
 
     # require 'tbk-soap'
@@ -9,17 +9,17 @@ module TBK
     # Transbank api docs: http://www.transbankdevelopers.cl/?m=api
 
     def initialize
-      @client = TBK::Client.new
+      @client = Tbk::Client.new
       # @ambient = configuration.get(ambient)
     end
 
     def config
-      TBK::TbkSoap.config
+      Tbk::Webpay.config
     end
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
 
-      commerce_code = TBK::Config.config.commerce_code
+      commerce_code = Tbk::Config.config.commerce_code
       returnURL = returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result"
       finalURL = finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end"
 
@@ -42,7 +42,7 @@ module TBK
     def init_transaction amount, buyOrder, sessionId
       input = init_data(amount, buyOrder, sessionId)
       document = @client.make_request(:init_transaction, input)
-      return TBK::Document.get_xml_values ['url', 'token'], document
+      return Tbk::Document.get_xml_values ['url', 'token'], document
     end
 
     def get_transaction_result token
@@ -50,7 +50,7 @@ module TBK
       document = @client.make_request(:get_transaction_result, input)
       keys = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
         "responsecode", "sessionid", "transactiondate"]
-      return TBK::Document.get_xml_values keys, document
+      return Tbk::Document.get_xml_values keys, document
       #return document
     end
 

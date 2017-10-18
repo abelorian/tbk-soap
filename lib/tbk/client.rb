@@ -1,14 +1,14 @@
-module TBK
+module Tbk
 
   class Client
 
     def initialize
       @client = client
-      @document = TBK::Document.new
+      @document = Tbk::Document.new
     end
 
     def client
-      @client ||= Savon.client(wsdl: TBK::Config.config.wsdl_transaction_url)
+      @client ||= Savon.client(wsdl: Tbk::Api.config.wsdl_transaction_url)
     end
 
     def make_request action, message_data
