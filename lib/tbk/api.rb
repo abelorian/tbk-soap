@@ -13,7 +13,7 @@ module TBK
       # @ambient = configuration.get(ambient)
     end
 
-    def self.config
+    def self.configuration
       @configuration ||= Config.new
       yield(@configuration)
     end
