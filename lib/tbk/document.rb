@@ -2,7 +2,7 @@ module TBK
   class Document
 
     def initialize
-      @public_cert = OpenSSL::X509::Certificate.new(open TBK::Config.config.cert_path)
+      @public_cert = TBK::Config.config.cert_file
       @private_key = OpenSSL::PKey::RSA.new(open TBK::Config.config.key_path)
       @webpay_cert = OpenSSL::X509::Certificate.new(open TBK::Config.config.server_cert_path)
     end

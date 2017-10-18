@@ -26,5 +26,18 @@ module TBK
     def self.config
       @config ||= Config.new
     end
+
+    def cert_file
+      OpenSSL::X509::Certificate.new(open (TBK::Config.config.cert_path || "lib/tbk/keys/597020000541.crt"))
+    end
+
+    def private_key
+      OpenSSL::PKey::RSA.new(open TBK::Config.config.key_path)
+    end
+
+    def webpay_cert
+      OpenSSL::X509::Certificate.new(open TBK::Config.config.server_cert_path)
+    end
+
   end
 end
