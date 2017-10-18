@@ -2,9 +2,9 @@ module TBK
   class Document
 
     def initialize
-      @public_cert = TBK::Config.config.public_cert
-      @private_key = TBK::Config.config.private_key
-      @webpay_cert = TBK::Config.config.webpay_cert
+      @public_cert = OpenSSL::X509::Certificate.new(open TBK::Config.config.cert_path)
+      @private_key = OpenSSL::PKey::RSA.new(open TBK::Config.config.key_path)
+      @webpay_cert = OpenSSL::X509::Certificate.new(open TBK::Config.config.server_cert_path)
     end
 
     def sign_xml (input_xml)
