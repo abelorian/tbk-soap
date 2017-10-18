@@ -13,9 +13,9 @@ module TBK
       # @ambient = configuration.get(ambient)
     end
 
-    def self.configuration
-      @configuration ||= Config.new
-      yield(@configuration)
+    def self.configure
+      @config ||= Config.new
+      yield(@config)
     end
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
