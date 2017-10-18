@@ -13,9 +13,8 @@ module TBK
       # @ambient = configuration.get(ambient)
     end
 
-    def self.configure
-      @config ||= Config.new
-      yield(@config)
+    def config
+      TBK::TbkSoap.config
     end
 
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)

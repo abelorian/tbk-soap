@@ -10,8 +10,13 @@ require "tbk/api"
 require "tbk/client"
 require "tbk/document"
 
-class TbkSoap
-  def api
-    @api ||= TBK::Api.new
+class << self
+
+  attr_reader :config
+
+  def self.configure
+    @config ||= Config.new
+    yield(@config)
   end
+
 end
