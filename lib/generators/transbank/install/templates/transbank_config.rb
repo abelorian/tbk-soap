@@ -1,4 +1,4 @@
-Tbk::Webpay.configure do |config|
+Transbank::Webpay.configure do |config|
   config.wsdl_transaction_url = 'https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSWebpayService?wsdl'
   config.wsdl_nullify_url     = 'https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCommerceIntegrationService?wsdl'
   config.cert_path            = 'config/tbk/597020000541.crt'

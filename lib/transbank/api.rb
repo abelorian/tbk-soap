@@ -37,7 +37,7 @@ module Transbank
     def init_transaction amount, buyOrder, sessionId, return_url = nil, final_url = nil
       input = init_data(amount, buyOrder, sessionId, return_url, final_url)
       document = client.make_request(:init_transaction, input)
-      return Transbank::Document.get_xml_values ['url', 'token'], document
+      return Transbank::Document.get_xml_values(['url', 'token'], document)
     end
 
     def get_transaction_result token
