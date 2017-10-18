@@ -8,4 +8,3 @@ Tbk::Webpay.configure do |config|
 end
 
 p "load tbk_ws"
-p Tbk::Webpay.configure.key_path

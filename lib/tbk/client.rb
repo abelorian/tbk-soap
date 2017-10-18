@@ -8,7 +8,7 @@ module Tbk
     end
 
     def client
-      @client ||= Savon.client(wsdl: Tbk::Api.config.wsdl_transaction_url)
+      @client ||= Savon.client(wsdl: Tbk::Webpay.configuration.wsdl_transaction_url)
     end
 
     def make_request action, message_data
