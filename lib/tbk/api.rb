@@ -13,6 +13,10 @@ module TBK
       # @ambient = configuration.get(ambient)
     end
 
+    def self.config
+      @config ||= Config.new
+    end
+
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
 
       commerce_code = TBK::Config.config.commerce_code
