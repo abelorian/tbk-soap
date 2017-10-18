@@ -28,15 +28,15 @@ module TBK
     end
 
     def public_cert
-      OpenSSL::X509::Certificate.new(open config.cert_path)
+      OpenSSL::X509::Certificate.new(open TBK::Config.config.cert_path)
     end
 
     def private_key
-      OpenSSL::PKey::RSA.new(open config.key_path)
+      OpenSSL::PKey::RSA.new(open TBK::Config.config.key_path)
     end
 
     def webpay_cert
-      OpenSSL::X509::Certificate.new(open config.server_cert_path)
+      OpenSSL::X509::Certificate.new(open TBK::Config.config.server_cert_path)
     end
 
   end
