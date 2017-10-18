@@ -4,10 +4,6 @@ require 'savon'
 module Transbank
   class Api
 
-    # require 'tbk-soap'
-    # api = TBK::Api.new
-    # Transbank api docs: http://www.transbankdevelopers.cl/?m=api
-
     def client
       @client ||= Transbank::Client.new
     end
@@ -19,8 +15,8 @@ module Transbank
     def init_data(amount, buyOrder, sessionId, returnURL = nil, finalURL = nil)
 
       commerce_code = config.commerce_code
-      returnURL = returnURL || "http://localhost:3000/tbk-normal-controller.rb?action=result"
-      finalURL = finalURL || "http://localhost:3000/tbk-normal-controller.rb?action=end"
+      returnURL = returnURL || "http://localhost:3000?action=result"
+      finalURL = finalURL || "http://localhost:3000?action=end"
 
       return {
         "wsInitTransactionInput" => {
@@ -38,8 +34,8 @@ module Transbank
       }
     end
 
-    def init_transaction amount, buyOrder, sessionId
-      input = init_data(amount, buyOrder, sessionId)
+    def init_transaction amount, buyOrder, sessionId, return_url = nil, final_url = nil
+      input = init_data(amount, buyOrder, sessionId, return_url, final_url)
       document = client.make_request(:init_transaction, input)
       return Transbank::Document.get_xml_values ['url', 'token'], document
     end
