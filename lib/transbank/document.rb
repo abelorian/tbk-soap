@@ -44,7 +44,7 @@ module Transbank
 
     def is_a_valid_document? document
       tbk_cert = @webpay_cert
-      if !Verifier.verify(document, tbk_cert)
+      if !Transbank::Verifier.verify(document, tbk_cert)
         puts "El Certificado es Invalido."
         return true
       else
