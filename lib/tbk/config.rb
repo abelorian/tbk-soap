@@ -28,7 +28,7 @@ module TBK
     end
 
     def cert_file
-      OpenSSL::X509::Certificate.new(open (TBK::Config.config.cert_path || "lib/tbk/keys/597020000541.crt"))
+      OpenSSL::X509::Certificate.new(open (cert_path || "lib/tbk/keys/597020000541.crt"))
     end
 
     def private_key
