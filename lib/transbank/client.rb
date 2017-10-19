@@ -12,12 +12,14 @@ module Transbank
 
     def make_request action, message_data
       req = @client.build_request(action.to_sym, message: message_data)
+      show_log(message_data)
       p message_data
       signed_xml = @document.sign_xml(req)
       begin
         response = @client.call(action.to_sym) do
           xml signed_xml.to_xml(:save_with => 0)
         end
+      show_log(response)
 
       rescue Exception, RuntimeError => e
         p "---------------- error"
@@ -27,6 +29,11 @@ module Transbank
       end
       @document.is_a_valid_document? response
       response
+    end
+
+    def show_log message
+      p "----- Transbank Webpay log -----"
+      p message
     end
 
   end
