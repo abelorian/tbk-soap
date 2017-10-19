@@ -53,6 +53,11 @@ module Transbank
       response_code.to_s == "0"
     end
 
+    def acknowledge_transaction token
+      input = {"tokenInput" => token}
+      document = client.make_request(:acknowledge_transaction, input)
+    end
+
   end
 
 end
