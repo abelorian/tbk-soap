@@ -18,8 +18,10 @@ module Transbank
           xml signed_xml.to_xml(:save_with => 0)
         end
 
-      rescue Exception, RuntimeError
+      rescue Exception, RuntimeError => e
         p "---------------- error"
+        p e
+        return "INVALID"
         raise
       end
       @document.is_a_valid_document? response

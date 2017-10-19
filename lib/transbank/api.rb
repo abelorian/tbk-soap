@@ -37,6 +37,7 @@ module Transbank
     def init_transaction amount, buyOrder, sessionId, return_url = nil, final_url = nil
       input = init_data(amount, buyOrder, sessionId, return_url, final_url)
       document = client.make_request(:init_transaction, input)
+      return document if document.to_s == "INVALID"
       return Transbank::Document.get_xml_values(['url', 'token'], document)
     end
 
@@ -50,6 +51,7 @@ module Transbank
     end
 
     def valid_transaction_result?(response_code)
+      return false if response_code.to_s == "INVALID"
       response_code.to_s == "0"
     end
 
