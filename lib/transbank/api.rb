@@ -49,8 +49,8 @@ module Transbank
       #return document
     end
 
-    def valid_transaction_result?(response)
-      response["responsecode"].to_s == "0"
+    def valid_transaction_result?(response_code)
+      response_code.to_s == "0"
     end
 
   end
