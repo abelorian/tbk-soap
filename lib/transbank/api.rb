@@ -50,14 +50,17 @@ module Transbank
       #return document
     end
 
-    def valid_transaction_result?(response_code)
-      return false if response_code.to_s == "INVALID"
+    def valid_transaction_result?(response_code)      
       response_code.to_s == "0"
     end
 
     def acknowledge_transaction token
       input = {"tokenInput" => token}
       document = client.make_request(:acknowledge_transaction, input)
+    end
+
+    def valid_acknowledge_result? response
+      return false if response.to_s.length < 10 && response.to_s == "INVALID"
     end
 
   end
