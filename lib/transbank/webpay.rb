@@ -5,6 +5,7 @@ require "digest/sha1"
 require 'net/https'
 
 require "transbank/config"
+require "transbank/messages"
 require "transbank/verifier"
 require "transbank/api"
 require "transbank/client"
@@ -15,7 +16,6 @@ module Transbank
   module Webpay
     class << self
 
-      p "class"
       attr_reader :configuration
 
       Api.instance_methods.each { |m| define_method(m) { |*args| api.send(m, *args) } }
