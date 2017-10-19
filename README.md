@@ -38,15 +38,13 @@ gem 'tbk-soap'
 Configure your commerce
 
 ```ruby
-TBK.configure do |config|
-  config.commerce_id YOUR_COMMERCE_ID
-  config.commerce_key YOUR_RSA_KEY
-
-  # When certifying with Transbank you'll need to use the official logger
-  config.webpay_logger :official do |logger|
-    # On this path will be the config file and logs in the KCC format.
-    logger.directory Rails.root.join('log/webpay')
-  end
+Transbank::Webpay.configure do |config|
+  config.wsdl_transaction_url = 'https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSWebpayService?wsdl'
+  config.wsdl_nullify_url     = 'https://webpay3gint.transbank.cl/WSWebpayTransaction/cxf/WSCommerceIntegrationService?wsdl'
+  config.cert_path            = 'config/tbk/597020000541.crt'
+  config.key_path             = 'config/tbk/597020000541.key'
+  config.server_cert_path     = 'config/tbk/tbk.pem'
+  config.commerce_code        = '597020000541'
 end
 ```
 
