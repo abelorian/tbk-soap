@@ -12,6 +12,7 @@ module Transbank
 
     def make_request action, message_data
       req = @client.build_request(action.to_sym, message: message_data)
+      p message_data
       signed_xml = @document.sign_xml(req)
       begin
         response = @client.call(action.to_sym) do
