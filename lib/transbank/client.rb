@@ -11,6 +11,7 @@ module Transbank
     end
 
     def make_request action, message_data
+      show_log(action)
       req = @client.build_request(action.to_sym, message: message_data)
       show_log(message_data)
       p message_data
@@ -32,8 +33,7 @@ module Transbank
     end
 
     def show_log message
-      p "----- Transbank Webpay log -----"
-      p message
+      p "----- Transbank Webpay log: #{message}"
     end
 
   end
