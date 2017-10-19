@@ -45,8 +45,12 @@ module Transbank
       document = client.make_request(:get_transaction_result, input)
       keys = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
         "responsecode", "sessionid", "transactiondate"]
-      return Transbank::Document.get_xml_values keys, document
+      return Transbank::Document.get_xml_values(keys, document)
       #return document
+    end
+
+    def valid_transaction_result?(response)
+      response["responsecode"].to_s == "0"
     end
 
   end
