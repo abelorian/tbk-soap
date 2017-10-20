@@ -57,10 +57,13 @@ module Transbank
     def acknowledge_transaction token
       input = {"tokenInput" => token}
       document = client.make_request(:acknowledge_transaction, input)
+      return document if document.to_s == "INVALID"
+      return Transbank::Document.get_xml_values(["tokeninput"], document)
     end
 
     def valid_acknowledge_result? response
       return false if response.to_s.length < 10 && response.to_s == "INVALID"
+      return true if response.to_s.length > 10 && response.to_s != "INVALID" && response["tokeninput"].present?
     end
 
   end
