@@ -21,9 +21,6 @@ module Transbank
         response = @client.call(action.to_sym) do
           xml signed_xml.to_xml(:save_with => 0)
         end
-        #show_log("response",response)
-        show_log("response_body", Transbank::Document.get_xml_values(["body"], response))
-
       rescue Exception, RuntimeError => e
         p "---------------- error"
         p e.inspect

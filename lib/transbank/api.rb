@@ -38,7 +38,9 @@ module Transbank
       input = init_data(amount, buyOrder, sessionId, return_url, final_url)
       document = client.make_request(:init_transaction, input)
       return document if document.to_s == "INVALID"
-      return Transbank::Document.get_xml_values(['url', 'token'], document)
+      response = Transbank::Document.get_xml_values(['url', 'token'], document)
+      show_log("init_transaction response", response)
+      return response
     end
 
     def get_transaction_result token
@@ -46,8 +48,9 @@ module Transbank
       document = client.make_request(:get_transaction_result, input)
       keys = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
         "responsecode", "sessionid", "transactiondate", "sharesnumber", "urlredirection"]
-      return Transbank::Document.get_xml_values(keys, document)
-      #return document
+      response = Transbank::Document.get_xml_values(keys, document)
+      show_log("get_transaction_result response", response)
+      return response
     end
 
     def valid_transaction_result?(response_code)      
@@ -57,13 +60,23 @@ module Transbank
     def acknowledge_transaction token
       input = {"tokenInput" => token}
       document = client.make_request(:acknowledge_transaction, input)
-      return document if document.to_s == "INVALID"
-      return Transbank::Document.get_xml_values(["signature"], document)
+      if document.to_s == "INVALID"
+        response = document
+      else
+        response = Transbank::Document.get_xml_values(["signature"], document)
+      end
+      show_log("acknowledge_transaction response", response)
+      return response
     end
 
     def valid_acknowledge_result? response
       return false if response.to_s.length < 10 && response.to_s == "INVALID"
       return true if response.to_s.length > 10 && response.to_s != "INVALID" && response["signature"].present?
+    end
+
+    def show_log key, message
+      p "----- Transbank Webpay log: #{key}"
+      p message
     end
 
   end
