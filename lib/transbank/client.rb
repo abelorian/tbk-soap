@@ -32,8 +32,7 @@ module Transbank
     end
 
     def show_log key, message
-      p "----- Transbank Webpay log: #{key}"
-      p message
+      Transbank::Webpay.show_log(key, message)
     end
   end
 end
