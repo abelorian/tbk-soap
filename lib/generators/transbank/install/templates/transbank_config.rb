@@ -6,5 +6,3 @@ Transbank::Webpay.configure do |config|
   config.server_cert_path     = 'config/tbk/tbk.pem'
   config.commerce_code        = '597020000541'
 end
-
-p "load tbk_ws"
