@@ -25,7 +25,7 @@ Or install it yourself as:
 
 Run the generator:
 
-    $ rails generate tbk_ws:install
+    $ rails generate transbank:install
 
 ### Usage
 
@@ -58,21 +58,10 @@ class WebpayController < ApplicationController
   # Start a payment
   def pay
     # Setup the payment
-    @payment = TBK::Webpay::Payment.new({
-      request_ip: request.ip,
-      amount: ORDER_AMOUNT,
-      order_id: ORDER_ID,
-      success_url: webpay_success_url,
-      # Webpay can only access the HTTP protocol to a direct IP address (keep that in mind)
-      confirmation_url: webpay_confirmation_url(host: SERVER_IP_ADDRESS, protocol: 'http'),
-
-      # Optionaly supply:
-      session_id: SOME_SESSION_VALUE,
-      failure_url: webpay_failure_url # success_url is used by default
-    })
+    @payment = Transbank::Webpay.init_transaction(SALE_TOTAL, SALE_ID, USER_ID, CONFIRMATION_URL, SUCCESS_URL)
 
     # Redirect the user to Webpay
-    redirect_to @payment.redirect_url
+    redirect_to @payment["url"] + "?token_ws=" + @payment["token"]
   end
 
   # ...
@@ -88,24 +77,21 @@ class WebpayController < ApplicationController
 
   # Confirmation callback executed from Webpay servers
   def confirmation
-    # Read the confirmation data from the request
-    @confirmation = TBK::Webpay::Confirmation.new({
-      request_ip: request.ip,
-      body: request.raw_post
-    })
+    response = Transbank::Webpay.get_transaction_result(params[:token_ws])
+    response_code = response["responsecode"] || -1
 
-    if # confirmation is invalid for some reason (wrong order_id or amount, double payment, etc...)
-      render text: @confirmation.reject
-      return # reject and stop execution
+    if !Transbank::Webpay.valid_transaction_result?(response_code) || SALE.paid?
+      # REDIRECT_TO checkout
     end
 
-    if @confirmation.success?
-      # EXITO!
-      # perform everything you have to do here.
-    end
+    # Execute after 30 seconds
+    acknowledge_response = Transbank::Webpay.acknowledge_transaction(params[:token_ws])
 
-    # Acknowledge payment
-    render text: @confirmation.acknowledge
+    unless @sale.paid?
+      SALE.pay! if Transbank::Webpay.valid_acknowledge_result?(acknowledge_response)
+    end
+    redirect_to response["urlredirection"] + "?token_ws=" + params[:token_ws].to_s
+
   end
 
   # ...

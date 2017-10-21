@@ -75,7 +75,7 @@ module Transbank
     end
 
     def show_log key, message
-      p ""
+      p 
       p "----- Transbank Webpay log: #{key} ------"
       p ""
       p message
