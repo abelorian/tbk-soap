@@ -27,7 +27,7 @@ module Transbank
         return "INVALID"
         raise
       end
-      @document.is_a_valid_document? response
+      return "INVALID" unless @document.is_a_valid_document?(response)
       response
     end
 

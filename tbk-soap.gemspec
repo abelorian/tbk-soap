@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |s|
   s.name        = 'tbk-soap'
-  s.version     = '0.2.4'
+  s.version     = '0.2.5'
   s.date        = '2017-08-09'
   s.summary     = "Ruby implementation of Transbank's Webpay SOAP protocol"
   s.description = "Ruby implementation of Transbank's Webpay SOAP protocol"
