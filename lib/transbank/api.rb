@@ -46,6 +46,7 @@ module Transbank
     def get_transaction_result token
       input = {"tokenInput" => token}
       document = client.make_request(:get_transaction_result, input)
+      return document if document.to_s == "INVALID"
       keys = ["paymenttypecode", "vci", "signaturevalue", "keyinfo", "securitytokenreference", "buyorder", "carddetail", "cardnumber", "amount", "authorizationcode",
         "responsecode", "sessionid", "transactiondate", "sharesnumber", "urlredirection"]
       response = Transbank::Document.get_xml_values(keys, document)
