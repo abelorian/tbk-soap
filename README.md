@@ -135,5 +135,22 @@ Para lograrlo, se usa un formulario en html. Transbank también lo utiliza en el
 ```
 
 
+### Pruebas
 
+
+**Tarjeta de crédito:**
+
+N° tarjeta de crédito	4051885600446623
+
+Año de expiración	Cualquiera
+
+Mes de expiración	Cualquiera
+
+CVV	123
+
+**Banco:**
+
+Rut	11111111-1
+
+Clave	123
 
