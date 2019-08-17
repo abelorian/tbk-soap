@@ -94,7 +94,7 @@ class WebpayController < ApplicationController
 
       
       @urlredirection = response["urlredirection"]
-      render "confirmation.html.erb" # ver abajo
+      render "confirmation.html.erb", layout: false # ver abajo
     end
     
 
