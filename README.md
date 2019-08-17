@@ -1,4 +1,4 @@
-### About
+### Info
 
 Implementación en Ruby de pago con WebpayPlus de Transbank.
 
@@ -23,7 +23,7 @@ Or install it yourself as:
 
     $ gem install tbk-soap
 
-Generador:
+Generador: Falta copiar los archivos de tbk a la carpeta config/tbk
 
     $ rails generate transbank:install
 
@@ -108,7 +108,7 @@ end
 
 ### Importante
 
-El acknowledge debe hacerse a traves del método POST. Si se redirecciona con GET, mostrará "Error de transacción" en el voucher.
+Luego del acknowledge, se debe "redireccionar" a traves del método POST. Si se redirecciona con GET, mostrará "Error de transacción" en el voucher.
 Para lograrlo, se usa un formulario en html. Transbank también lo utiliza en el flujo.
 
 
