@@ -1,21 +1,21 @@
 ### About
 
-This is a pure ruby implementation of Transbank's SOAP service.
+Implementación en Ruby de pago con WebpayPlus de Transbank.
 
 
 ### Disclaimer
 
-This library is not developed, supported nor endorsed in any way by Transbank S.A.
+Esta gema no es de Transbank. Aunque está basada al 100% en la documentación de TransbankDevelopers.
 
-## Installation
+## Instalación
 
-Add this line to your application's Gemfile:
+Agregar al Gemfile:
 
 ```ruby
 gem 'tbk-soap'
 ```
 
-And then execute:
+Instalar gemas:
 
     $ bundle
 
@@ -23,11 +23,11 @@ Or install it yourself as:
 
     $ gem install tbk-soap
 
-Run the generator:
+Generador:
 
     $ rails generate transbank:install
 
-### Usage
+### Cómo usarla
 
 Add this line to your application's Gemfile:
 
@@ -35,7 +35,7 @@ Add this line to your application's Gemfile:
 gem 'tbk-soap'
 ```
 
-Configure your commerce
+Configurar
 
 ```ruby
 Transbank::Webpay.configure do |config|
@@ -48,7 +48,7 @@ Transbank::Webpay.configure do |config|
 end
 ```
 
-To start a payment from your application
+Para generar una nueva transacción
 
 ```ruby
 class WebpayController < ApplicationController
@@ -68,7 +68,7 @@ class WebpayController < ApplicationController
 end
 ```
 
-And to process a payment
+Confirmar la transacción
 
 ```ruby
 class WebpayController < ApplicationController
@@ -76,6 +76,7 @@ class WebpayController < ApplicationController
   # ...
 
   # Confirmation callback executed from Webpay servers
+  # Aqui depende de cada comercio.
   def confirmation
     response = Transbank::Webpay.get_transaction_result(params[:token_ws])
     response_code = response["responsecode"] || -1
@@ -87,10 +88,16 @@ class WebpayController < ApplicationController
     # Execute after 30 seconds
     acknowledge_response = Transbank::Webpay.acknowledge_transaction(params[:token_ws])
 
-    unless @sale.paid?
+    unless SALE.paid?
       SALE.pay! if Transbank::Webpay.valid_acknowledge_result?(acknowledge_response)
+      
+
+      
+      @urlredirection = response["urlredirection"]
+      render "notify.html" # ver abajo
     end
-    redirect_to response["urlredirection"] + "?token_ws=" + params[:token_ws].to_s
+    
+
 
   end
 
@@ -99,11 +106,34 @@ class WebpayController < ApplicationController
 end
 ```
 
-### Contributing
+### Importante
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+El acknowledge debe hacerse a traves del método POST. Si se redirecciona con GET, mostrará "Error de transacción" en el voucher.
+Para lograrlo, se usa un formulario en html. Transbank también lo utiliza en el flujo.
+
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcu</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+<body>
+  <form id="paso" name="paso" action="<%= @urlredirection %>" method="POST">
+    <input type='hidden' name='token_ws' value='<%= params["token_ws"] %>' />
+  </form>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      setTimeout(function () {
+        $("#paso").submit();
+      }, 0);
+    });
+  </script>
+</body>
+</html>
+```
+
+
+
 
