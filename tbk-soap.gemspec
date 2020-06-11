@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'savon', '~> 2.11', '>= 2.11.1'
-  s.add_dependency 'signer'
+  s.add_dependency 'signer', '1.6.0'
 
 end
